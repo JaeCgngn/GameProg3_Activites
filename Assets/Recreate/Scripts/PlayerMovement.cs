@@ -1,45 +1,59 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class PlayerMovement : MonoBehaviour
 {
-    public float speed = 5f;
+        NavMeshAgent agent;
+        Camera cam;
+        public float detectionRange = 5f;
 
     void Start()
     {
-        
+        agent = GetComponent<NavMeshAgent>();
+        cam = Camera.main;
     }
 
     void Update()
     {
         PlayerMove();
+        DetectEnemies();
     }
 
     void PlayerMove()
     {
-        float x = 0f;
-        float z = 0f;
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
 
-        if (Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.LeftArrow))
-        {
-            x = -1f;
+            if (Physics.Raycast(ray, out hit))
+            {
+                agent.SetDestination(hit.point);
+                
+            }
         }
-        else if (Input.GetKey(KeyCode.D) || Input.GetKey(KeyCode.RightArrow))
-        {
-            x = 1f;
-        }
+    }
 
-        if (Input.GetKey(KeyCode.W) || Input.GetKey(KeyCode.UpArrow))
-        {
-            z = 1f;
-        }
-        else if (Input.GetKey(KeyCode.S) || Input.GetKey(KeyCode.DownArrow))
-        {
-            z = -1f;
-        }
-            
-        Vector3 dir = new Vector3(x, 0f, z);
+    void DetectEnemies()
+    {
 
-        transform.position += dir * speed * Time.deltaTime;
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+
+        foreach (GameObject enemy in enemies)
+        {
+            float distance = Vector3.Distance(transform.position, enemy.transform.position);
+
+            if (distance <= detectionRange)
+            {
+                Debug.Log("Enemy detected");
+            }
+        }
+    }
+
+    void OnDrawGizmosSelected()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawWireSphere(transform.position, detectionRange);
     }
 
 }
