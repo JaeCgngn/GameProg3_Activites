@@ -127,3 +127,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Projectile
   speed: 10
   damage: 3
+  hitRadius: 0.3
+  hitEffectPrefab: {fileID: 4047920858968234422, guid: 27e5b6aae54a380438dd6c83af1c69a2, type: 3}

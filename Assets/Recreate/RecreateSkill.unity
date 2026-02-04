@@ -1033,7 +1033,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
   attackRange: 8
-  normalDamage: 5
   normalCooldown: 1
   weaponPrefab: {fileID: 8563092011663616514, guid: c36f8f2512169cd429a1539bbf0606a5, type: 3}
   skillRange: 8

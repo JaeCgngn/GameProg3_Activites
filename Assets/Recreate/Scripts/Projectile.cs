@@ -4,7 +4,10 @@ public class Projectile : MonoBehaviour
 {
     public float speed = 10f;
     public int damage = 3;
+    public float hitRadius = 0.3f;
     private Enemy target;
+
+    public GameObject hitEffectPrefab;
 
 
     public void SetTarget(Enemy enemy)
@@ -26,6 +29,7 @@ public class Projectile : MonoBehaviour
 
         if (target == null)
         {
+            SpawnHitEffect();
             Destroy(gameObject);
             return;
         }
@@ -47,4 +51,18 @@ public class Projectile : MonoBehaviour
             Destroy(gameObject); 
         }
     }
+
+    void SpawnHitEffect()
+    {
+        if (hitEffectPrefab == null) return;
+
+        GameObject fx = Instantiate(
+            hitEffectPrefab,
+            transform.position,
+            Quaternion.identity
+        );
+
+        Destroy(fx, 1.5f); 
+    }
+    
 }
