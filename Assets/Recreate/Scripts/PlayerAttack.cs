@@ -6,10 +6,11 @@ public class PlayerAttack : MonoBehaviour
 
     [Header ("Attack Settings")]
     public float attackRange = 3f;
-    public int normalDamage = 3;
+    //public int normalDamage = 3;
     public float normalCooldown = 1f;
     private Enemy enemy;
     GameObject targetEnemy;
+    public GameObject weaponPrefab;
     NavMeshAgent agent;
     private Enemy enemyHealth;
     private float lastAttackTime;
@@ -67,13 +68,22 @@ public class PlayerAttack : MonoBehaviour
             return;
 
         lastAttackTime = Time.time;
+        SpawnWeapon();
+        Debug.Log("Normal Attack!");
 
-        if (enemyHealth != null)
-        {
-            enemyHealth.TakeDamage(normalDamage);
-            Debug.Log("Dealt " + normalDamage + " damage");
-        }
+        // if (enemyHealth != null)
+        // {
+        //     //enemyHealth.TakeDamage(normalDamage);
+        //     Debug.Log("Dealt " + normalDamage + " damage");
+        // }
+    }
+
+    void SpawnWeapon()
+    {
+        GameObject weapon = Instantiate(weaponPrefab, transform.position + transform.forward, Quaternion.identity); // spawn weapon in front of player
         
+        Projectile proj = weapon.GetComponent<Projectile>(); // get Projectile component
+        proj.SetTarget(enemyHealth);
     }
 
     void HandleSkillAttack()
@@ -89,8 +99,8 @@ public class PlayerAttack : MonoBehaviour
             
            if (Time.time >= lastSkillTime + skillCooldown)
             {
-                //SkillAttack();
-                Debug.Log("Casting Skill Attack");
+                SkillAttack();
+                //Debug.Log("Casting Skill Attack");
                 lastSkillTime = Time.time;
             }
             else
@@ -101,23 +111,23 @@ public class PlayerAttack : MonoBehaviour
         }
     }
 
-    // void SkillAttack()
-    // {
-    //     Debug.Log("Casting Skill Attack");
+    void SkillAttack()
+    {
+        //Debug.Log("Casting Skill Attack");
 
-    //     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-    //     if (Physics.Raycast(ray, out RaycastHit hit))
-    //     {
-    //         Vector3 direction = (hit.point - transform.position).normalized;
-    //         Vector3 skillPoint = transform.position + direction * skillRange;
+        if (Physics.Raycast(ray, out RaycastHit hit))
+        {
+            Vector3 direction = (hit.point - transform.position).normalized;
+            Vector3 skillPoint = transform.position + direction * skillRange;
 
-    //         Debug.Log("Skill cast!");
+            Debug.Log("Skill cast!");
 
-    //         // SpawnSkillEffect(skillPoint);
-    //         // DealSkillDamage(skillPoint);
-    //     }
-    // }
+            // SpawnSkillEffect(skillPoint);
+            // DealSkillDamage(skillPoint);
+        }
+    }
 
     void AttackRangeDetection() // handle movement toward target enemy
     {
