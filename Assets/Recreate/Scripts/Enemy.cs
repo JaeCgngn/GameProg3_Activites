@@ -8,6 +8,8 @@ public class Enemy : MonoBehaviour
     public void TakeDamage(float damageAmount)
     {
         EnemyHealth -= damageAmount;
+        Debug.Log(gameObject.name + " took " + damageAmount + " damage. HP: " + EnemyHealth);
+        
         if (EnemyHealth <= 0f)
         {
             Die();
@@ -16,7 +18,7 @@ public class Enemy : MonoBehaviour
 
     void Die()
     {
-        
+        Debug.Log("Enemy died");
         Destroy(gameObject);
     }
 }

@@ -6,19 +6,22 @@ public class PlayerAttack : MonoBehaviour
 
     [Header ("Attack Settings")]
     public float attackRange = 3f;
-    public float normalDamage = 10f;
-    public float normalCooldown = 0.5f;
-    float lastAttackTime;
+    public int normalDamage = 3;
+    public float normalCooldown = 1f;
     private Enemy enemy;
     GameObject targetEnemy;
     NavMeshAgent agent;
-    // [Header ("Skill Settings")]
-    // public float skillDamage = 30f;
-    // public float skillCooldown = 5f;
+    private Enemy enemyHealth;
+    private float lastAttackTime;
 
-    // private NavMeshAgent agent;
-    // private Enemy enemy;
-    // private float lastAttackTime = 0f;
+
+    [Header ("Skill Settings")]
+    public float skillRange = 8f;
+    public float skillCooldown = 10f;
+    public float skillRadius = 1.5f;
+    public float skillDamageMultiplier = 0.8f;
+    private bool isAimingSkill;
+    private float lastSkillTime;
 
 
 
@@ -31,6 +34,7 @@ public class PlayerAttack : MonoBehaviour
     {
         GameObject target = FindEnemyInRange(); // find enemy in range
         AttackRangeDetection(); // handle movement toward target
+        HandleSkillAttack(); // handle skill attack
     }
 
     GameObject FindEnemyInRange() // find the closest enemy within attack range
@@ -55,11 +59,65 @@ public class PlayerAttack : MonoBehaviour
         return closestEnemy;
     }
 
-    void Attack()
+    void NormalAttack()
     {
-        Debug.Log("Attacking enemy");
-        // later: animations, damage, cooldown, etc.
+        //Debug.Log("Attacking enemy");
+
+        if (Time.time < lastAttackTime + normalCooldown)
+            return;
+
+        lastAttackTime = Time.time;
+
+        if (enemyHealth != null)
+        {
+            enemyHealth.TakeDamage(normalDamage);
+            Debug.Log("Dealt " + normalDamage + " damage");
+        }
+        
     }
+
+    void HandleSkillAttack()
+    {
+        if(Input.GetKeyDown(KeyCode.E))
+        {
+            isAimingSkill = true;
+            Debug.Log("Aiming Skill Attack - Click to Cast");
+        }
+
+        if(Input.GetKeyUp(KeyCode.E))
+        {
+            
+           if (Time.time >= lastSkillTime + skillCooldown)
+            {
+                //SkillAttack();
+                Debug.Log("Casting Skill Attack");
+                lastSkillTime = Time.time;
+            }
+            else
+            {
+                Debug.Log("Skill on Cooldown");
+            }
+            isAimingSkill = false;
+        }
+    }
+
+    // void SkillAttack()
+    // {
+    //     Debug.Log("Casting Skill Attack");
+
+    //     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+    //     if (Physics.Raycast(ray, out RaycastHit hit))
+    //     {
+    //         Vector3 direction = (hit.point - transform.position).normalized;
+    //         Vector3 skillPoint = transform.position + direction * skillRange;
+
+    //         Debug.Log("Skill cast!");
+
+    //         // SpawnSkillEffect(skillPoint);
+    //         // DealSkillDamage(skillPoint);
+    //     }
+    // }
 
     void AttackRangeDetection() // handle movement toward target enemy
     {
@@ -72,8 +130,8 @@ public class PlayerAttack : MonoBehaviour
             if (!agent.isStopped)
                 agent.isStopped = true; // stop movement
 
-            Debug.Log("Enemy in Range - Attacking!"); // attack when in range
-            Attack();
+            //Debug.Log("Enemy in Range - Attacking!"); // attack when in range
+            NormalAttack();
         }
         else
         {
@@ -88,6 +146,7 @@ public class PlayerAttack : MonoBehaviour
     public void SetTarget(GameObject enemy)
     {
          targetEnemy = enemy; // set the target enemy
+         enemyHealth = enemy.GetComponent<Enemy>();
 
         if (agent != null) // ensure agent is not null
         {
@@ -105,7 +164,6 @@ public class PlayerAttack : MonoBehaviour
         if (agent != null) // ensure agent is not stopped
             agent.isStopped = false; // resume movement
     }
-
 
     void OnDrawGizmosSelected()
     {

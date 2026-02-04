@@ -1001,8 +1001,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::PlayerAttack
   attackRange: 8
-  normalDamage: 10
-  normalCooldown: 0.5
+  normalDamage: 5
+  normalCooldown: 1
 --- !u!1 &1819185445
 GameObject:
   m_ObjectHideFlags: 0
