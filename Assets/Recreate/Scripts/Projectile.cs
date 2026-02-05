@@ -22,17 +22,17 @@ public class Projectile : MonoBehaviour
 
     void Update()
     {   
-        //Debug.Log("Target: " + target);
+
         Vector3 dir = (target.transform.position - transform.position).normalized; // direction to target
         transform.position += dir * speed * Time.deltaTime; // move toward target
+
         HitEnemy();
 
-        if (target == null)
-        {
-            SpawnHitEffect();
-            Destroy(gameObject);
-            return;
-        }
+        // if (target == null)
+        // {
+        //     Destroy(gameObject);
+        //     return;
+        // }
     }
 
     void HitEnemy()
@@ -44,9 +44,10 @@ public class Projectile : MonoBehaviour
         }
 
         float distance = Vector3.Distance(transform.position, target.transform.position); // check distance to target
-        if (distance < 0.3f) 
+        if (distance < 0.3f) // hit radius
         {
             target.TakeDamage(damage); // apply damage to target
+            SpawnHitEffect();
             Debug.Log("Projectile dealt " + damage + " damage to " + target.name);
             Destroy(gameObject); 
         }
@@ -55,7 +56,7 @@ public class Projectile : MonoBehaviour
     void SpawnHitEffect()
     {
         if (hitEffectPrefab == null) return;
-
+        Debug.Log("Spawning hit effect at " + transform.position);
         GameObject fx = Instantiate(
             hitEffectPrefab,
             transform.position,
