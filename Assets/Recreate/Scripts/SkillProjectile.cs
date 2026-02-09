@@ -44,7 +44,8 @@ public class SkillProjectile : MonoBehaviour
     {
         if(!other.CompareTag("Enemy")) return;
 
-        Enemy enemy =other.GetComponent<Enemy>();
+        
+        Enemy enemy = other.GetComponent<Enemy>();
         if (enemy != null)
         {
             enemy.TakeDamage(damage);
